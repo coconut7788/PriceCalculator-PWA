@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#FFFFFF">
+    <title>价格计算器</title>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>价格计算器</h1>
+            <div class="header-buttons">
+                <button class="header-btn add-btn" id="addRowBtn" type="button">+添加</button>
+                <button class="header-btn clear-btn" id="clearAllBtn" type="button">↻清空</button>
+            </div>
+        </header>
+
+        <main class="calculator">
+            <div class="table-header">
+                <div class="col-remark">备注</div>
+                <div class="col-quantity">数量</div>
+                <div class="col-price">总价</div>
+                <div class="col-unit">单价</div>
+                <div class="col-delete"></div>
+            </div>
+
+            <div class="items-container" id="itemsContainer">
+                <div class="item-row" data-id="1">
+                    <div class="col-remark">
+                        <input type="text" id="remark-1" placeholder="" inputmode="text">
+                    </div>
+                    <div class="col-quantity">
+                        <input type="text" id="quantity-1" placeholder="" inputmode="decimal">
+                    </div>
+                    <div class="col-price">
+                        <input type="text" id="price-1" placeholder="" inputmode="decimal">
+                    </div>
+                    <div class="col-unit">
+                        <span class="unit-price-value">=0.000</span>
+                    </div>
+                    <div class="col-delete">
+                        <button class="delete-btn" type="button" aria-label="删除此行">✕</button>
+                    </div>
+                </div>
+
+                <div class="item-row" data-id="2">
+                    <div class="col-remark">
+                        <input type="text" id="remark-2" placeholder="" inputmode="text">
+                    </div>
+                    <div class="col-quantity">
+                        <input type="text" id="quantity-2" placeholder="" inputmode="decimal">
+                    </div>
+                    <div class="col-price">
+                        <input type="text" id="price-2" placeholder="" inputmode="decimal">
+                    </div>
+                    <div class="col-unit">
+                        <span class="unit-price-value">=0.000</span>
+                    </div>
+                    <div class="col-delete">
+                        <button class="delete-btn" type="button" aria-label="删除此行">✕</button>
+                    </div>
+                </div>
+
+                <div class="item-row best-price" data-id="3">
+                    <div class="col-remark">
+                        <input type="text" id="remark-3" placeholder="" inputmode="text">
+                    </div>
+                    <div class="col-quantity">
+                        <input type="text" id="quantity-3" placeholder="" inputmode="decimal">
+                    </div>
+                    <div class="col-price">
+                        <input type="text" id="price-3" placeholder="" inputmode="decimal">
+                    </div>
+                    <div class="col-unit">
+                        <span class="unit-price-value">=0.000</span>
+                    </div>
+                    <div class="col-delete">
+                        <button class="delete-btn" type="button" aria-label="删除此行">✕</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
