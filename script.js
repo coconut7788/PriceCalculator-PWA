@@ -37,7 +37,15 @@ function calculateUnitPrice(row) {
     }
 
     const unitPrice = price / quantity;
-    unitPriceSpan.textContent = '=' + unitPrice.toFixed(3);
+
+    for (let decimals = 3; decimals >= 1; decimals--) {
+        const formatted = unitPrice.toFixed(decimals);
+        unitPriceSpan.textContent = '=' + formatted;
+        if (unitPriceSpan.scrollWidth <= unitPriceSpan.offsetWidth) {
+            break;
+        }
+    }
+
     return unitPrice;
 }
 
@@ -339,7 +347,11 @@ function init() {
 }
 
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').then((registration) => {
+    const swUrl = './sw.js?t=' + Date.now();
+    navigator.serviceWorker.register(swUrl).then((registration) => {
+        setInterval(() => {
+            registration.update();
+        }, 60 * 60 * 1000);
         registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing;
             if (newWorker) {
@@ -353,6 +365,8 @@ if ('serviceWorker' in navigator) {
                 });
             }
         });
+    }).catch((err) => {
+        console.log('Service Worker 注册失败:', err);
     });
 }
 
