@@ -35,11 +35,13 @@ body {
 }
 
 .app-container {
-    max-width: 100%;
     min-height: 100vh;
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .app-header {
@@ -63,7 +65,7 @@ body {
 }
 
 .app-header h1 {
-    font-size: 2.5rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: #FFFFFF;
     letter-spacing: -0.02em;
@@ -76,8 +78,8 @@ body {
 }
 
 .header-btn {
-    padding: 0.6rem 1.2rem;
-    font-size: 1.2rem;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.6rem;
     font-weight: 600;
     border: none;
     border-radius: 0.5rem;
@@ -211,6 +213,10 @@ body {
 }
 
 @media (min-width: 768px) {
+    .app-container {
+        max-width: 600px;
+    }
+
     .app-header {
         padding: calc(2rem + var(--safe-area-top)) 3rem 2rem;
     }
@@ -221,9 +227,6 @@ body {
 
     .calculator {
         padding: 2rem 3rem;
-        max-width: 600px;
-        margin: 0 auto;
-        width: 100%;
     }
 
     .header-btn {
