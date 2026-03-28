@@ -261,7 +261,7 @@ body {
     }
 
     .app-header {
-        padding: calc(2rem + var(--safe-area-top)) 3rem 2rem;
+        padding: calc(4rem + var(--safe-area-top)) 3rem 2rem;
     }
 
     .app-header h1 {
@@ -273,7 +273,6 @@ body {
     }
 
     .header-btn {
-        padding: 0.8rem 1.5rem;
-        font-size: 1.3rem;
+        padding: 0;
     }
 }
