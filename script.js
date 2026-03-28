@@ -5,7 +5,7 @@ const BEST_PRICE_CLASS = 'best-price';
 const ERROR_MSG_CLASS = 'error-message';
 
 function safeEvaluate(expr) {
-    const cleaned = expr.replace(/[^0-9+\-*/.()\s]/g, '');
+    const cleaned = expr.replace(/[^0-9+\-*/.%()\s]/g, '');
     if (!cleaned.trim()) return NaN;
     try {
         const result = Function('"use strict"; return (' + cleaned + ')')();
@@ -31,6 +31,12 @@ function calculateUnitPrice(row) {
     const quantity = parseInput(quantityInput.value);
     const price = parseInput(priceInput.value);
 
+    if ((quantityInput.value.trim() === '' || priceInput.value.trim() === '') &&
+        !(quantityInput.value.trim() === '' && priceInput.value.trim() === '')) {
+        unitPriceSpan.textContent = '=0.000';
+        return false;
+    }
+
     if (isNaN(quantity) || isNaN(price) || quantity === 0) {
         unitPriceSpan.textContent = '=无效';
         return false;
@@ -38,13 +44,15 @@ function calculateUnitPrice(row) {
 
     const unitPrice = price / quantity;
 
-    for (let decimals = 3; decimals >= 1; decimals--) {
-        const formatted = unitPrice.toFixed(decimals);
-        unitPriceSpan.textContent = '=' + formatted;
-        if (unitPriceSpan.scrollWidth <= unitPriceSpan.offsetWidth) {
-            break;
-        }
+    let decimals;
+    if (unitPrice < 1000) {
+        decimals = 3;
+    } else if (unitPrice < 10000) {
+        decimals = 2;
+    } else {
+        decimals = 1;
     }
+    unitPriceSpan.textContent = '=' + unitPrice.toFixed(decimals);
 
     return unitPrice;
 }
@@ -70,7 +78,7 @@ function findBestPriceRow(rows) {
         if (isNaN(quantity) || isNaN(price) || quantity === 0) return;
 
         const unitPrice = price / quantity;
-        if (unitPrice < bestPrice) {
+        if (unitPrice <= bestPrice) {
             bestPrice = unitPrice;
             bestRow = row;
         }
@@ -129,15 +137,12 @@ function handleInputChange(e) {
         const quantityInput = row.querySelector('input[id^="quantity-"]');
         const priceInput = row.querySelector('input[id^="price-"]');
 
-        const quantity = parseInput(quantityInput.value);
-        const price = parseInput(priceInput.value);
-
-        if (quantityInput.value.trim() && isNaN(quantity)) {
-            showError(quantityInput, '请输入完整的规格');
+        if (/[^0-9+\-*/.%()\s]/.test(quantityInput.value)) {
+            showError(quantityInput, '请输入有效的数量表达式');
             return;
         }
 
-        if (priceInput.value.trim() && isNaN(price)) {
+        if (/[^0-9+\-*/.%\s]/.test(priceInput.value)) {
             showError(priceInput, '请输入有效数字');
             return;
         }
@@ -179,7 +184,7 @@ function handleKeyDown(e) {
             setTimeout(() => {
                 const newInputs = getAllInputsInOrder();
                 if (newInputs.length > inputs.length) {
-                    newInputs[0].focus();
+                    newInputs[inputs.length].focus();
                 }
             }, 50);
         } else {

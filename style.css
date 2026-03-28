@@ -6,10 +6,8 @@
 }
 
 :root {
-    --primary-purple: #7D3C98;
-    --primary-purple-dark: #6C3483;
-    --primary-purple-light: #BB8FCE;
-    --primary-purple-faded: #A66EB8;
+    --primary-purple: #3F0C87;
+    --primary-purple-dark: #6026B0;
     --text-primary: #000000;
     --text-secondary: #666666;
     --bg-primary: #FFFFFF;
@@ -45,7 +43,7 @@ body {
 }
 
 .app-header {
-    background: linear-gradient(180deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+    background: #6026B0;
     padding: calc(4rem + var(--safe-area-top)) 1.5rem 2rem;
     display: flex;
     justify-content: space-between;
@@ -61,7 +59,7 @@ body {
     left: 0;
     right: 0;
     height: 1rem;
-    background: var(--primary-purple-faded);
+    background: var(--primary-purple);
 }
 
 .app-header h1 {
@@ -75,6 +73,7 @@ body {
     display: flex;
     gap: 1rem;
     flex-shrink: 0;
+    padding-bottom: 0.5rem;
 }
 
 .header-btn {
@@ -104,9 +103,9 @@ body {
 
 .table-header {
     display: grid;
-    grid-template-columns: 0.8fr 1.4fr 1fr 1fr 3rem;
+    grid-template-columns: 0.8fr 1.4fr 1.5fr 1.5fr 2rem;
     gap: 0.5rem;
-    padding: 0.5rem;
+    padding: 0.7rem;
 }
 
 .table-header > div {
@@ -114,10 +113,6 @@ body {
     font-weight: 600;
     color: var(--text-primary);
     text-align: center;
-}
-
-.table-header .col-remark {
-    text-align: left;
 }
 
 .items-container {
@@ -128,18 +123,17 @@ body {
 
 .item-row {
     display: grid;
-    grid-template-columns: 0.8fr 1.4fr 1fr 1.3fr 3rem;
+    grid-template-columns: 0.8fr 1.4fr 1.5fr 1.5fr 2rem;
     gap: 0.5rem;
     padding: 0.5rem;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     background: var(--bg-secondary);
     align-items: center;
     transition: all 0.3s ease;
 }
 
 .item-row.best-price {
-    background: rgba(187, 143, 206, 0.3);
-    border: 2px solid var(--primary-purple-light);
+    background: rgba(96, 38, 176, 0.22);
 }
 
 .item-row > div {
@@ -153,7 +147,7 @@ body {
     padding: 0 0.8rem;
     font-size: 1.2rem;
     border: 2px solid var(--border-color);
-    border-radius: 0.6rem;
+    border-radius: 0.4rem;
     background: #FFFFFF;
     color: var(--text-primary);
     outline: none;
@@ -212,7 +206,7 @@ body {
 
 .delete-btn:active {
     transform: scale(0.9);
-    background: #FF3B30;
+    background: #3F0C87;
 }
 
 @media (min-width: 768px) {
