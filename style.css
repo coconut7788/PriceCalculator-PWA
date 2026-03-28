@@ -71,13 +71,15 @@ body {
 
 .header-buttons {
     display: flex;
-    gap: 1rem;
+    gap: 0.3rem;
     flex-shrink: 0;
     padding-bottom: 0.5rem;
 }
 
 .header-btn {
-    padding: 0.3rem 0.6rem;
+    width: 4rem;
+    height: 2rem;
+    padding: 0;
     font-size: 0.9rem;
     font-weight: 600;
     border: none;
@@ -86,6 +88,9 @@ body {
     color: var(--primary-purple-dark);
     cursor: pointer;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .header-btn:active {
@@ -103,7 +108,7 @@ body {
 
 .table-header {
     display: grid;
-    grid-template-columns: 0.8fr 1.4fr 1.5fr 1.5fr 2rem;
+    grid-template-columns: 1.4fr 1.5fr 2.3fr 2rem;
     gap: 0.5rem;
     padding: 0.7rem;
 }
@@ -123,7 +128,7 @@ body {
 
 .item-row {
     display: grid;
-    grid-template-columns: 0.8fr 1.4fr 1.5fr 1.5fr 2rem;
+    grid-template-columns: 1.4fr 1.5fr 2.3fr 2rem;
     gap: 0.5rem;
     padding: 0.5rem;
     border-radius: 0.5rem;
@@ -152,10 +157,6 @@ body {
     color: var(--text-primary);
     outline: none;
     text-align: center;
-}
-
-.item-row .col-remark input {
-    text-align: left;
 }
 
 .item-row input:focus {

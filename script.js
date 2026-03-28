@@ -126,40 +126,34 @@ function hideError(input) {
 
 function handleInputChange(e) {
     const target = e.target;
-    if (!target.id || !target.id.match(/^(quantity-|price-|remark-)\d+$/)) return;
-
-    hideError(target);
+    if (!target.id || !target.id.match(/^(quantity-|price-)\d+$/)) return;
 
     const row = target.closest('.' + ITEM_ROW_CLASS);
     if (!row) return;
 
-    if (target.id.startsWith('quantity-') || target.id.startsWith('price-')) {
-        const quantityInput = row.querySelector('input[id^="quantity-"]');
-        const priceInput = row.querySelector('input[id^="price-"]');
+    const quantityInput = row.querySelector('input[id^="quantity-"]');
+    const priceInput = row.querySelector('input[id^="price-"]');
 
-        if (/[^0-9+\-*/.%()\s]/.test(quantityInput.value)) {
-            showError(quantityInput, '请输入有效的数量表达式');
-            return;
-        }
-
-        if (/[^0-9+\-*/.%\s]/.test(priceInput.value)) {
-            showError(priceInput, '请输入有效数字');
-            return;
-        }
-
-        calculateUnitPrice(row);
-        updateBestPriceHighlight();
+    if (/[^0-9+\-*/.%()\s]/.test(quantityInput.value)) {
+        showError(quantityInput, '请输入有效的数量表达式');
+        return;
     }
+
+    if (/[^0-9+\-*/.%\s]/.test(priceInput.value)) {
+        showError(priceInput, '请输入有效数字');
+        return;
+    }
+
+    calculateUnitPrice(row);
+    updateBestPriceHighlight();
 }
 
 function getAllInputsInOrder() {
     const rows = findAllItemRows();
     const inputs = [];
     rows.forEach(row => {
-        const remarkInput = row.querySelector('input[id^="remark-"]');
         const quantityInput = row.querySelector('input[id^="quantity-"]');
         const priceInput = row.querySelector('input[id^="price-"]');
-        if (remarkInput) inputs.push(remarkInput);
         if (quantityInput) inputs.push(quantityInput);
         if (priceInput) inputs.push(priceInput);
     });
@@ -168,7 +162,7 @@ function getAllInputsInOrder() {
 
 function handleKeyDown(e) {
     const target = e.target;
-    if (!target.id || !target.id.match(/^(quantity-|price-|remark-)\d+$/)) return;
+    if (!target.id || !target.id.match(/^(quantity-|price-)\d+$/)) return;
 
     if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -207,9 +201,6 @@ function addNewRow() {
     newRow.className = ITEM_ROW_CLASS;
     newRow.dataset.id = newId;
     newRow.innerHTML = `
-        <div class="col-remark">
-            <input type="text" id="remark-${newId}" placeholder="" inputmode="text">
-        </div>
         <div class="col-quantity">
             <input type="text" id="quantity-${newId}" placeholder="" inputmode="decimal">
         </div>
@@ -227,7 +218,7 @@ function addNewRow() {
     container.appendChild(newRow);
     attachRowEvents(newRow);
 
-    const firstInput = newRow.querySelector('input[id^="remark-"]');
+    const firstInput = newRow.querySelector('input[id^="quantity-"]');
     if (firstInput) {
         firstInput.focus();
     }
@@ -263,9 +254,6 @@ function clearAllRows() {
 
     container.innerHTML = `
         <div class="item-row" data-id="1">
-            <div class="col-remark">
-                <input type="text" id="remark-1" placeholder="" inputmode="text">
-            </div>
             <div class="col-quantity">
                 <input type="text" id="quantity-1" placeholder="" inputmode="decimal">
             </div>
@@ -280,9 +268,6 @@ function clearAllRows() {
             </div>
         </div>
         <div class="item-row" data-id="2">
-            <div class="col-remark">
-                <input type="text" id="remark-2" placeholder="" inputmode="text">
-            </div>
             <div class="col-quantity">
                 <input type="text" id="quantity-2" placeholder="" inputmode="decimal">
             </div>
@@ -297,9 +282,6 @@ function clearAllRows() {
             </div>
         </div>
         <div class="item-row" data-id="3">
-            <div class="col-remark">
-                <input type="text" id="remark-3" placeholder="" inputmode="text">
-            </div>
             <div class="col-quantity">
                 <input type="text" id="quantity-3" placeholder="" inputmode="decimal">
             </div>
@@ -318,7 +300,7 @@ function clearAllRows() {
     const rows = container.querySelectorAll('.' + ITEM_ROW_CLASS);
     rows.forEach(row => attachRowEvents(row));
 
-    const firstInput = container.querySelector('input[id^="remark-"]');
+    const firstInput = container.querySelector('input[id^="quantity-"]');
     if (firstInput) firstInput.focus();
 }
 
