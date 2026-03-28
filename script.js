@@ -129,6 +129,7 @@ function showMultiplyBtn(input) {
     if (!wrapper) return;
     const btn = wrapper.querySelector('.multiply-btn');
     if (btn) btn.classList.add('visible');
+    input.style.paddingRight = '2rem';
 }
 
 function hideMultiplyBtn(input) {
@@ -136,6 +137,7 @@ function hideMultiplyBtn(input) {
     if (!wrapper) return;
     const btn = wrapper.querySelector('.multiply-btn');
     if (btn) btn.classList.remove('visible');
+    input.style.paddingRight = '0.2rem';
 }
 
 function insertMultiplySign(input) {
@@ -211,7 +213,7 @@ function handleKeyDown(e) {
     const target = e.target;
     if (!target.id || !target.id.match(/^(quantity-|price-)\d+$/)) return;
 
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
         e.preventDefault();
         const inputs = getAllInputsInOrder();
         const currentIndex = inputs.indexOf(target);
@@ -369,6 +371,7 @@ function attachRowEvents(row) {
         input.addEventListener('input', handleInputChange);
         input.addEventListener('keydown', handleKeyDown);
         if (input.id && input.id.match(/^quantity-\d+$/)) {
+            input.style.paddingRight = '0.2rem';
             input.addEventListener('focus', handleQuantityFocus);
             input.addEventListener('blur', handleQuantityBlur);
         }

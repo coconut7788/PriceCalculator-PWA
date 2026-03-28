@@ -242,6 +242,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: 1;
+    text-align: center;
 }
 
 .multiply-btn.visible {
