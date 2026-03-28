@@ -124,6 +124,53 @@ function hideError(input) {
     if (existing) existing.remove();
 }
 
+function showMultiplyBtn(input) {
+    const wrapper = input.closest('.quantity-input-wrapper');
+    if (!wrapper) return;
+    const btn = wrapper.querySelector('.multiply-btn');
+    if (btn) btn.classList.add('visible');
+}
+
+function hideMultiplyBtn(input) {
+    const wrapper = input.closest('.quantity-input-wrapper');
+    if (!wrapper) return;
+    const btn = wrapper.querySelector('.multiply-btn');
+    if (btn) btn.classList.remove('visible');
+}
+
+function insertMultiplySign(input) {
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const value = input.value;
+    input.value = value.substring(0, start) + '*' + value.substring(end);
+    input.selectionStart = input.selectionEnd = start + 1;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+function handleQuantityFocus(e) {
+    const target = e.target;
+    if (!target.id || !target.id.match(/^quantity-\d+$/)) return;
+    showMultiplyBtn(target);
+}
+
+function handleQuantityBlur(e) {
+    const target = e.target;
+    if (!target.id || !target.id.match(/^quantity-\d+$/)) return;
+    hideMultiplyBtn(target);
+}
+
+function handleMultiplyClick(e) {
+    const btn = e.target;
+    if (!btn.classList.contains('multiply-btn')) return;
+    const input = btn.closest('.quantity-input-wrapper')?.querySelector('input');
+    if (input) {
+        const cursorPos = input.selectionStart;
+        insertMultiplySign(input);
+        input.focus();
+        input.selectionStart = input.selectionEnd = cursorPos + 1;
+    }
+}
+
 function handleInputChange(e) {
     const target = e.target;
     if (!target.id || !target.id.match(/^(quantity-|price-)\d+$/)) return;
@@ -202,7 +249,10 @@ function addNewRow() {
     newRow.dataset.id = newId;
     newRow.innerHTML = `
         <div class="col-quantity">
-            <input type="text" id="quantity-${newId}" placeholder="" inputmode="decimal">
+            <div class="quantity-input-wrapper">
+                <input type="text" id="quantity-${newId}" placeholder="" inputmode="decimal">
+                <button type="button" class="multiply-btn" aria-label="输入乘号">*</button>
+            </div>
         </div>
         <div class="col-price">
             <input type="text" id="price-${newId}" placeholder="" inputmode="decimal">
@@ -255,7 +305,10 @@ function clearAllRows() {
     container.innerHTML = `
         <div class="item-row" data-id="1">
             <div class="col-quantity">
-                <input type="text" id="quantity-1" placeholder="" inputmode="decimal">
+                <div class="quantity-input-wrapper">
+                    <input type="text" id="quantity-1" placeholder="" inputmode="decimal">
+                    <button type="button" class="multiply-btn" aria-label="输入乘号">*</button>
+                </div>
             </div>
             <div class="col-price">
                 <input type="text" id="price-1" placeholder="" inputmode="decimal">
@@ -269,7 +322,10 @@ function clearAllRows() {
         </div>
         <div class="item-row" data-id="2">
             <div class="col-quantity">
-                <input type="text" id="quantity-2" placeholder="" inputmode="decimal">
+                <div class="quantity-input-wrapper">
+                    <input type="text" id="quantity-2" placeholder="" inputmode="decimal">
+                    <button type="button" class="multiply-btn" aria-label="输入乘号">*</button>
+                </div>
             </div>
             <div class="col-price">
                 <input type="text" id="price-2" placeholder="" inputmode="decimal">
@@ -283,7 +339,10 @@ function clearAllRows() {
         </div>
         <div class="item-row" data-id="3">
             <div class="col-quantity">
-                <input type="text" id="quantity-3" placeholder="" inputmode="decimal">
+                <div class="quantity-input-wrapper">
+                    <input type="text" id="quantity-3" placeholder="" inputmode="decimal">
+                    <button type="button" class="multiply-btn" aria-label="输入乘号">*</button>
+                </div>
             </div>
             <div class="col-price">
                 <input type="text" id="price-3" placeholder="" inputmode="decimal">
@@ -309,6 +368,10 @@ function attachRowEvents(row) {
     inputs.forEach(input => {
         input.addEventListener('input', handleInputChange);
         input.addEventListener('keydown', handleKeyDown);
+        if (input.id && input.id.match(/^quantity-\d+$/)) {
+            input.addEventListener('focus', handleQuantityFocus);
+            input.addEventListener('blur', handleQuantityBlur);
+        }
     });
 
     const deleteBtn = row.querySelector('.delete-btn');
@@ -323,6 +386,8 @@ function init() {
 
     const rows = container.querySelectorAll('.' + ITEM_ROW_CLASS);
     rows.forEach(row => attachRowEvents(row));
+
+    container.addEventListener('click', handleMultiplyClick);
 
     const addBtn = document.getElementById('addRowBtn');
     if (addBtn) addBtn.addEventListener('click', addNewRow);
