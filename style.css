@@ -11,7 +11,7 @@
     --text-primary: #000000;
     --text-secondary: #666666;
     --bg-primary: #FFFFFF;
-    --bg-secondary: #F8F8F8;
+    --bg-secondary: #F4F4F4;
     --border-color: #666666;
     --safe-area-top: env(safe-area-inset-top, 0px);
     --safe-area-bottom: env(safe-area-inset-bottom, 0px);
