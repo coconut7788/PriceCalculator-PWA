@@ -6,7 +6,7 @@ const ASSETS_TO_CACHE = [
   './manifest.json'
 ];
 
-const CACHE_NAME = 'price-calculator-v2';
+const CACHE_NAME = 'price-calculator-v2.1';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

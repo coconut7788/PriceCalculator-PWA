@@ -352,8 +352,7 @@ function init() {
 }
 
 if ('serviceWorker' in navigator) {
-    const swUrl = './sw.js?t=' + Date.now();
-    navigator.serviceWorker.register(swUrl).then((registration) => {
+    navigator.serviceWorker.register('./sw.js').then((registration) => {
         setInterval(() => {
             registration.update();
         }, 60 * 60 * 1000);
