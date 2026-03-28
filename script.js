@@ -5,7 +5,7 @@ const BEST_PRICE_CLASS = 'best-price';
 const ERROR_MSG_CLASS = 'error-message';
 
 function safeEvaluate(expr) {
-    const cleaned = expr.replace(/[^0-9+\-*/.%()\s]/g, '');
+    const cleaned = expr.replace(/[^0-9+\-*/.\s]/g, '');
     if (!cleaned.trim()) return NaN;
     try {
         const result = Function('"use strict"; return (' + cleaned + ')')();
@@ -78,7 +78,7 @@ function findBestPriceRow(rows) {
         if (isNaN(quantity) || isNaN(price) || quantity === 0) return;
 
         const unitPrice = price / quantity;
-        if (unitPrice <= bestPrice) {
+        if (unitPrice < bestPrice) {
             bestPrice = unitPrice;
             bestRow = row;
         }
@@ -91,20 +91,28 @@ function updateBestPriceHighlight() {
     const rows = findAllItemRows();
     rows.forEach(row => row.classList.remove(BEST_PRICE_CLASS));
 
+    let bestRow = null;
+    let bestPrice = Infinity;
+
     const validRows = rows.filter(row => {
         const quantityInput = row.querySelector('input[id^="quantity-"]');
         const priceInput = row.querySelector('input[id^="price-"]');
         if (!quantityInput || !priceInput) return false;
         const quantity = parseInput(quantityInput.value);
         const price = parseInput(priceInput.value);
-        return !isNaN(quantity) && !isNaN(price) && quantity !== 0;
+        const isValid = !isNaN(quantity) && !isNaN(price) && quantity !== 0;
+        if (isValid) {
+            const unitPrice = price / quantity;
+            if (unitPrice < bestPrice) {
+                bestPrice = unitPrice;
+                bestRow = row;
+            }
+        }
+        return isValid;
     });
 
-    if (validRows.length > 1) {
-        const bestRow = findBestPriceRow(validRows);
-        if (bestRow) {
-            bestRow.classList.add(BEST_PRICE_CLASS);
-        }
+    if (validRows.length > 1 && bestRow) {
+        bestRow.classList.add(BEST_PRICE_CLASS);
     }
 }
 
@@ -183,12 +191,12 @@ function handleInputChange(e) {
     const quantityInput = row.querySelector('input[id^="quantity-"]');
     const priceInput = row.querySelector('input[id^="price-"]');
 
-    if (/[^0-9+\-*/.%()\s]/.test(quantityInput.value)) {
+    if (/[^0-9+\-*/.\s]/.test(quantityInput.value)) {
         showError(quantityInput, '请输入有效的数量表达式');
         return;
     }
 
-    if (/[^0-9+\-*/.%\s]/.test(priceInput.value)) {
+    if (/[^0-9+\-*/.\s]/.test(priceInput.value)) {
         showError(priceInput, '请输入有效数字');
         return;
     }
@@ -304,16 +312,21 @@ function clearAllRows() {
     const container = document.getElementById(ITEMS_CONTAINER_ID);
     if (!container) return;
 
-    container.innerHTML = `
-        <div class="item-row" data-id="1">
+    container.innerHTML = '';
+
+    for (let i = 1; i <= 3; i++) {
+        const newRow = document.createElement('div');
+        newRow.className = ITEM_ROW_CLASS;
+        newRow.dataset.id = i;
+        newRow.innerHTML = `
             <div class="col-quantity">
                 <div class="quantity-input-wrapper">
-                    <input type="text" id="quantity-1" placeholder="" inputmode="decimal">
+                    <input type="text" id="quantity-${i}" placeholder="" inputmode="decimal">
                     <button type="button" class="multiply-btn" aria-label="输入乘号">*</button>
                 </div>
             </div>
             <div class="col-price">
-                <input type="text" id="price-1" placeholder="" inputmode="decimal">
+                <input type="text" id="price-${i}" placeholder="" inputmode="decimal">
             </div>
             <div class="col-unit">
                 <span class="unit-price-value">=0.000</span>
@@ -321,42 +334,9 @@ function clearAllRows() {
             <div class="col-delete">
                 <button class="delete-btn" type="button" aria-label="删除此行">✕</button>
             </div>
-        </div>
-        <div class="item-row" data-id="2">
-            <div class="col-quantity">
-                <div class="quantity-input-wrapper">
-                    <input type="text" id="quantity-2" placeholder="" inputmode="decimal">
-                    <button type="button" class="multiply-btn" aria-label="输入乘号">*</button>
-                </div>
-            </div>
-            <div class="col-price">
-                <input type="text" id="price-2" placeholder="" inputmode="decimal">
-            </div>
-            <div class="col-unit">
-                <span class="unit-price-value">=0.000</span>
-            </div>
-            <div class="col-delete">
-                <button class="delete-btn" type="button" aria-label="删除此行">✕</button>
-            </div>
-        </div>
-        <div class="item-row" data-id="3">
-            <div class="col-quantity">
-                <div class="quantity-input-wrapper">
-                    <input type="text" id="quantity-3" placeholder="" inputmode="decimal">
-                    <button type="button" class="multiply-btn" aria-label="输入乘号">*</button>
-                </div>
-            </div>
-            <div class="col-price">
-                <input type="text" id="price-3" placeholder="" inputmode="decimal">
-            </div>
-            <div class="col-unit">
-                <span class="unit-price-value">=0.000</span>
-            </div>
-            <div class="col-delete">
-                <button class="delete-btn" type="button" aria-label="删除此行">✕</button>
-            </div>
-        </div>
-    `;
+        `;
+        container.appendChild(newRow);
+    }
 
     const rows = container.querySelectorAll('.' + ITEM_ROW_CLASS);
     rows.forEach(row => attachRowEvents(row));
