@@ -108,7 +108,7 @@ body {
 
 .table-header {
     display: grid;
-    grid-template-columns: 1.7fr 1.5fr 2fr;
+    grid-template-columns: 1.7fr 1.3fr 2.2fr;
     gap: 0.5rem;
     padding: 0.7rem;
 }
@@ -118,6 +118,9 @@ body {
     font-weight: 600;
     color: var(--text-primary);
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .unit-toggle-buttons {
