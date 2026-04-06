@@ -3,6 +3,10 @@ const UNIT_PRICE_CLASS = 'unit-price-value';
 const ITEM_ROW_CLASS = 'item-row';
 const BEST_PRICE_CLASS = 'best-price';
 const ERROR_MSG_CLASS = 'error-message';
+const UNIT_TOGGLE_BTN_CLASS = 'unit-toggle-btn';
+const BASE_PRICE_KEY = 'data-base-price';
+
+let currentMultiplier = 1;
 
 function safeEvaluate(expr) {
     const cleaned = expr.replace(/[^0-9+\-*/.\s]/g, '');
@@ -34,27 +38,32 @@ function calculateUnitPrice(row) {
     if ((quantityInput.value.trim() === '' || priceInput.value.trim() === '') &&
         !(quantityInput.value.trim() === '' && priceInput.value.trim() === '')) {
         unitPriceSpan.textContent = '=0.000';
+        row.removeAttribute(BASE_PRICE_KEY);
         return false;
     }
 
     if (isNaN(quantity) || isNaN(price) || quantity === 0) {
         unitPriceSpan.textContent = '=无效';
+        row.removeAttribute(BASE_PRICE_KEY);
         return false;
     }
 
-    const unitPrice = price / quantity;
+    const basePrice = price / quantity;
+    row.setAttribute(BASE_PRICE_KEY, basePrice);
+
+    const displayPrice = basePrice * currentMultiplier;
 
     let decimals;
-    if (unitPrice < 1000) {
+    if (displayPrice < 1000) {
         decimals = 3;
-    } else if (unitPrice < 10000) {
+    } else if (displayPrice < 10000) {
         decimals = 2;
     } else {
         decimals = 1;
     }
-    unitPriceSpan.textContent = '=' + unitPrice.toFixed(decimals);
+    unitPriceSpan.textContent = '=' + displayPrice.toFixed(decimals);
 
-    return unitPrice;
+    return basePrice;
 }
 
 function findAllItemRows() {
@@ -345,6 +354,43 @@ function clearAllRows() {
     if (firstInput) firstInput.focus();
 }
 
+function refreshAllDisplayPrices() {
+    const rows = findAllItemRows();
+    rows.forEach(row => {
+        const basePrice = parseFloat(row.getAttribute(BASE_PRICE_KEY));
+        const unitPriceSpan = row.querySelector('.' + UNIT_PRICE_CLASS);
+        if (isNaN(basePrice) || !unitPriceSpan) return;
+
+        const displayPrice = basePrice * currentMultiplier;
+        let decimals;
+        if (displayPrice < 1000) {
+            decimals = 3;
+        } else if (displayPrice < 10000) {
+            decimals = 2;
+        } else {
+            decimals = 1;
+        }
+        unitPriceSpan.textContent = '=' + displayPrice.toFixed(decimals);
+    });
+}
+
+function handleUnitToggleClick(e) {
+    const btn = e.target;
+    if (!btn.classList.contains(UNIT_TOGGLE_BTN_CLASS)) return;
+
+    const multiplier = parseInt(btn.dataset.multiplier, 10);
+    if (isNaN(multiplier)) return;
+
+    currentMultiplier = multiplier;
+
+    document.querySelectorAll('.' + UNIT_TOGGLE_BTN_CLASS).forEach(b => {
+        b.classList.remove('active');
+    });
+    btn.classList.add('active');
+
+    refreshAllDisplayPrices();
+}
+
 function attachRowEvents(row) {
     const inputs = row.querySelectorAll('input');
     inputs.forEach(input => {
@@ -377,6 +423,10 @@ function init() {
 
     const clearBtn = document.getElementById('clearAllBtn');
     if (clearBtn) clearBtn.addEventListener('click', clearAllRows);
+
+    document.querySelectorAll('.' + UNIT_TOGGLE_BTN_CLASS).forEach(btn => {
+        btn.addEventListener('click', handleUnitToggleClick);
+    });
 
     updateBestPriceHighlight();
 }

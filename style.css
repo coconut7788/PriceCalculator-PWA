@@ -120,6 +120,34 @@ body {
     text-align: center;
 }
 
+.unit-toggle-buttons {
+    display: flex;
+    gap: 0.2rem;
+    justify-content: center;
+    width: 100%;
+}
+
+.unit-toggle-btn {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 2px solid var(--primary-purple);
+    border-radius: 0.3rem;
+    background: #FFFFFF;
+    color: var(--primary-purple);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.unit-toggle-btn.active {
+    background: var(--primary-purple);
+    color: #FFFFFF;
+}
+
+.unit-toggle-btn:active {
+    transform: scale(0.95);
+}
+
 .items-container {
     display: flex;
     flex-direction: column;
