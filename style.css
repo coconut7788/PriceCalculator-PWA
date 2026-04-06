@@ -108,7 +108,7 @@ body {
 
 .table-header {
     display: grid;
-    grid-template-columns: 29% 22% 49%;
+    grid-template-columns: 29% 20% 51%;
     gap: 0.5rem;
     padding: 0.7rem;
 }
