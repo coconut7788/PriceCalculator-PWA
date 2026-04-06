@@ -8,6 +8,12 @@ const BASE_PRICE_KEY = 'data-base-price';
 
 let currentMultiplier = 1;
 
+function getDecimalPlaces(displayPrice) {
+    if (displayPrice < 1000) return 3;
+    if (displayPrice < 10000) return 2;
+    return 1;
+}
+
 function safeEvaluate(expr) {
     const cleaned = expr.replace(/[^0-9+\-*/.\s]/g, '');
     if (!cleaned.trim()) return NaN;
@@ -23,6 +29,12 @@ function parseInput(value) {
     const trimmed = value.trim();
     if (!trimmed) return NaN;
     return safeEvaluate(trimmed);
+}
+
+function formatDisplayPrice(basePrice, multiplier) {
+    const displayPrice = basePrice * multiplier;
+    const decimals = getDecimalPlaces(displayPrice);
+    return '=' + displayPrice.toFixed(decimals);
 }
 
 function calculateUnitPrice(row) {
@@ -50,18 +62,7 @@ function calculateUnitPrice(row) {
 
     const basePrice = price / quantity;
     row.setAttribute(BASE_PRICE_KEY, basePrice);
-
-    const displayPrice = basePrice * currentMultiplier;
-
-    let decimals;
-    if (displayPrice < 1000) {
-        decimals = 3;
-    } else if (displayPrice < 10000) {
-        decimals = 2;
-    } else {
-        decimals = 1;
-    }
-    unitPriceSpan.textContent = '=' + displayPrice.toFixed(decimals);
+    unitPriceSpan.textContent = formatDisplayPrice(basePrice, currentMultiplier);
 
     return basePrice;
 }
@@ -69,31 +70,6 @@ function calculateUnitPrice(row) {
 function findAllItemRows() {
     const container = document.getElementById(ITEMS_CONTAINER_ID);
     return container ? Array.from(container.querySelectorAll('.' + ITEM_ROW_CLASS)) : [];
-}
-
-function findBestPriceRow(rows) {
-    let bestRow = null;
-    let bestPrice = Infinity;
-
-    rows.forEach(row => {
-        const quantityInput = row.querySelector('input[id^="quantity-"]');
-        const priceInput = row.querySelector('input[id^="price-"]');
-
-        if (!quantityInput || !priceInput) return;
-
-        const quantity = parseInput(quantityInput.value);
-        const price = parseInput(priceInput.value);
-
-        if (isNaN(quantity) || isNaN(price) || quantity === 0) return;
-
-        const unitPrice = price / quantity;
-        if (unitPrice < bestPrice) {
-            bestPrice = unitPrice;
-            bestRow = row;
-        }
-    });
-
-    return bestRow;
 }
 
 function updateBestPriceHighlight() {
@@ -360,17 +336,7 @@ function refreshAllDisplayPrices() {
         const basePrice = parseFloat(row.getAttribute(BASE_PRICE_KEY));
         const unitPriceSpan = row.querySelector('.' + UNIT_PRICE_CLASS);
         if (isNaN(basePrice) || !unitPriceSpan) return;
-
-        const displayPrice = basePrice * currentMultiplier;
-        let decimals;
-        if (displayPrice < 1000) {
-            decimals = 3;
-        } else if (displayPrice < 10000) {
-            decimals = 2;
-        } else {
-            decimals = 1;
-        }
-        unitPriceSpan.textContent = '=' + displayPrice.toFixed(decimals);
+        unitPriceSpan.textContent = formatDisplayPrice(basePrice, currentMultiplier);
     });
 }
 
@@ -431,10 +397,15 @@ function init() {
     updateBestPriceHighlight();
 }
 
+let swRegistration = null;
+
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').then((registration) => {
+        swRegistration = registration;
         setInterval(() => {
-            registration.update();
+            if (swRegistration) {
+                swRegistration.update();
+            }
         }, 60 * 60 * 1000);
         registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing;

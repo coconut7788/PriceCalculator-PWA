@@ -213,6 +213,15 @@ body {
     -moz-appearance: textfield;
 }
 
+.item-row input,
+.multiply-btn,
+.delete-btn {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 .unit-price-value {
     width: 100%;
     font-size: 1.26rem;
