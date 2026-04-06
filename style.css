@@ -108,9 +108,13 @@ body {
 
 .table-header {
     display: grid;
-    grid-template-columns: 1.6fr 1.2fr 2.4fr;
+    grid-template-columns: 29% 22% 49%;
     gap: 0.5rem;
     padding: 0.7rem;
+}
+
+.table-header > div:last-child {
+    padding-right: 1rem;
 }
 
 .table-header > div {
